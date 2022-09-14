@@ -18,7 +18,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  */
 
-class Users_model extends CI_Model
+class Demo_users_model extends CI_Model
 {
     public $default_lang = 'EN';
 
@@ -96,196 +96,6 @@ class Users_model extends CI_Model
             $this->db->select("iImageId AS image_id");
             $this->db->select("vLocalImageId AS local_image_id");
             $result_obj = $this->db->get();
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-             if (!is_array($result_arr) || count($result_arr) == 0) {
-                throw new Exception('No records found.');
-            } 
-            $success = 1;
-        } catch (Exception $e) {
-            $arrResult['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($arrResult, $e);
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-        //echo __LINE__;exit;
-      //  echo '<pre>';print_r($result_arr);exit;
-        return $return_arr;
-    }
-
-    /**
-     * update_device_token method is used to execute database queries for Update Device Token API.
-     *
-     * @param array $params_arr params_arr array to process query block.
-     * @param array $where_arr where_arr are used to process where condition(s).
-     *
-     * @return array $return_arr returns response of query block.
-     */
-    public function update_device_token($params_arr = array(), $where_arr = array())
-    {
-        try {
-            $message = "";
-            $result_arr = array();
-            if (isset($where_arr["user_id"]) && $where_arr["user_id"] != "") {
-                $this->db->where("iUserId =", $where_arr["user_id"]);
-            }
-            if (isset($params_arr["device_token"])) {
-                $this->db->set("vDeviceToken", $params_arr["device_token"]);
-            }
-            $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtupdatedat"], FALSE);
-            $res = $this->db->update("users");
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-            $affected_rows = $this->db->affected_rows();
-            if (!$res || $affected_rows == -1) {
-                throw new Exception("Failure in updation.");
-            }
-            $result_param = "affected_rows";
-            $result_arr[0][$result_param] = $affected_rows;
-            $success = 1;
-        } catch (Exception $e) {
-            $success = 0;
-            $message = $e->getMessage();
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-        }
-        $this->db->flush_cache();
-        $this->db->_reset_all();
-        //echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-
-    /**
-     * update_notification method is used to execute database queries for Update Push Notification Settings API.
-     *
-     * @param array $params_arr params_arr array to process query block.
-     * @param array $where_arr where_arr are used to process where condition(s).
-     *
-     * @return array $return_arr returns response of query block.
-     */
-    public function update_notification($params_arr = array(), $where_arr = array())
-    {
-        try {
-            $message = "";
-            $result_arr = array();
-
-            $this->db->where_in("eStatus", array('Active'));
-            if (isset($where_arr["user_id"]) && $where_arr["user_id"] != "") {
-                $this->db->where("iUserId =", $where_arr["user_id"]);
-            }
-            if (isset($params_arr["notification"])) {
-                $this->db->set("ePushNotify", $params_arr["notification"]);
-            }
-            $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtupdatedat"], FALSE);
-            $res = $this->db->update("users");
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-            $affected_rows = $this->db->affected_rows();
-            if (!$res || $affected_rows == -1) {
-                throw new Exception("Failure in updation.");
-            }
-            $result_param = "affected_rows";
-            $result_arr[0][$result_param] = $affected_rows;
-            $success = 1;
-        } catch (Exception $e) {
-            $success = 0;
-            $message = $e->getMessage();
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-        }
-        $this->db->flush_cache();
-        $this->db->_reset_all();
-        //echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-
-    /**
-     * update_new_password method is used to execute database queries for Change Password API.
-     *
-     * @param array $params_arr params_arr array to process query block.
-     
-     * @param array $where_arr where_arr are used to process where condition(s).
-     *
-     * @return array $return_arr returns response of query block.
-     */
-    public function update_new_password($params_arr = array(), $where_arr = array())
-    {
-        try {
-            $message = "";
-            $result_arr = array();
-            if (isset($where_arr["user_id"]) && $where_arr["user_id"] != "") {
-                $this->db->where("iUserId =", $where_arr["user_id"]);
-            }
-            $this->db->where("eStatus", "Active");
-            if (isset($params_arr["new_password"])) {
-                $this->db->set("vPassword", $params_arr["new_password"]);
-            }
-            $res = $this->db->update("users");
-
-
-            //echo $this->db->last_query();
-           // exit;
-
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-            $affected_rows = $this->db->affected_rows();
-
-            if (!$res || $affected_rows == -1) {
-                throw new Exception("Failure in updation.");
-            }
-            $db_error = $this->db->error();
-            if (!$db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $result_param = "affected_rows";
-            $result_arr[0][$result_param] = $affected_rows;
-            $success = 1;
-        } catch (Exception $e) {
-            $success = 0;
-            $message = $e->getMessage();
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-        }
-        $this->db->flush_cache();
-        $this->db->_reset_all();
-        //echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
 
     /**
      * check_unique_mobile_number method is used to execute database queries for Change Mobile Number API.
@@ -619,7 +429,7 @@ class Users_model extends CI_Model
             if (isset($params_arr["post_type"])) {
                 $this->db->set("post_type", $params_arr["post_type"]);
             }
-            $this->db->set($this->db->protect("created_at"), $params_arr["created_at"], FALSE);
+            
             if (isset($params_arr["post_image"]) && !empty($params_arr["post_image"])) {
                 $this->db->set("vProfileImage", $params_arr["post_image"]);
             }
@@ -3054,7 +2864,7 @@ class Users_model extends CI_Model
         return $return_arr;
     }
 
-
+}
    /**
      * update_image method is used to execute database queries for User Login demo API.
      *
@@ -3067,119 +2877,21 @@ class Users_model extends CI_Model
         try {
             $message = "";
             $result_arr = array();
-            if(isset($params_arr["u_user_id"])) {
-                $this->db->set("post_id", $params_arr["u_user_id"]);
+            if (isset($where_arr["u_user_id"]) && $where_arr["u_user_id"] != "") {
+                $this->db->where("iUserId =", $where_arr["u_user_id"]);
             }
+
             if (isset($params_arr["post_image"])) {
-                $this->db->set("post_images", $params_arr["post_image"]);
-            }
-            $this->db->insert("post_images");
-            $insert_id = $this->db->insert_id();
-
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            if (!$insert_id) {
-                throw new Exception("Failure in insertion.");
-            }
-            $result_param = "insert_id";
-            $result_arr[0][$result_param] = $insert_id;
-            $success = 1;
-        } catch (Exception $e) {
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-        //echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-
-    // tushar
-    public function posts_list()
-    {
-        try {
-            $result_arr = array();
-
-            $this->db->from("demo_api_users");
-            $this->db->select('post_title AS post_title');
-            $this->db->select('post_decreption AS post_decreption');
-            $this->db->select('posted_by AS posted_by');
-            $this->db->select('post_type AS type');
-
-            $this->db->order_by("post_id", "asc");
-            $result_obj = $this->db->get();
-           
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-            if (!is_array($result_arr) || count($result_arr) == 0) {
-                throw new Exception('No records found.');
-            }
-            $success = 1;
-            $message = "";
-        } catch (Exception $e) {
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-        // echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-
-/**
-     * update_posts_details method is used to execute database queries for User Login Email API.
-     *
-     * @param array $params_arr params_arr array to process query block.
-     * @param array $where_arr where_arr are used to process where condition(s).
-     * @return array $return_arr returns response of query block.
-     */
-    public function update_posts_details($params_arr = array(), $where_arr = array())
-    {
-        
-        try {
-            $message = "";
-            $result_arr = array();
-            if (isset($where_arr["post_id"]) && $where_arr["post_id"] != "") {
-                $this->db->where("post_id =", $where_arr["post_id"]);
-            }
-            if (isset($params_arr["post_title"])) {
-                $this->db->set("post_title", $params_arr["post_title"]);
-            }
-            if (isset($params_arr["post_decreption"])) {
-                $this->db->set("post_decreption", $params_arr["post_decreption"]);
-            }
-            if (isset($params_arr["posted_by"])) {
-                $this->db->set("posted_by", $params_arr["posted_by"]);
-            }
-            if (isset($params_arr["post_type"])) {
-                $this->db->set("post_type", $params_arr["post_type"]);
-            }
-            $this->db->set($this->db->protect("updated_at"), $params_arr["updated_at"], FALSE);
-            if (isset($params_arr["post_image"]) && !empty($params_arr["post_image"])) {
                 $this->db->set("vProfileImage", $params_arr["post_image"]);
             }
+           
             $res = $this->db->update("demo_api_users");
             $affected_rows = $this->db->affected_rows();
+
+            $db_error = $this->db->error();
+            if ($db_error['code']) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
             if (!$res || $affected_rows == -1) {
                 throw new Exception("Failure in updation.");
             }
@@ -3189,152 +2901,13 @@ class Users_model extends CI_Model
         } catch (Exception $e) {
             $success = 0;
             $message = $e->getMessage();
+            $params_arr['db_query'] = $this->db->last_query();
+            $params_arr['user_id'] = $where_arr["u_user_id"];
+            $this->general->apiLogger($params_arr, $e);
         }
         $this->db->flush_cache();
         $this->db->_reset_all();
-        //echo $this->db->last_query();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-           /**
-     * This method is used to execute database queries for get user details API.
-     *
-     * @param string $user_id user_id is used to process query block.
-
-     * @return array $return_arr returns response of query block.
-     */
-    public function get_posts_details($post_id = '')
-    {
-        try {
-            $message = "";
-            $result_arr = array();
-
-            $this->db->from("demo_api_users AS u");
-        
-            $this->db->select("u.post_title AS u_post_title");
-            $this->db->select("u.post_decreption AS u_post_decreption");
-            $this->db->select("u.posted_by AS u_posted_by");
-            $this->db->select("u.post_type AS u_post_type");
-            $this->db->select("p.post_images AS post_Image");
-            $this->db->join('post_images as p','p.post_id=u.post_id');
-            if (isset($post_id) && $post_id != "") {
-                $this->db->where("u.post_id =", $post_id);
-            }
-            $result_obj = $this->db->get();
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-            // echo $this->db->last_query();
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-            if (!is_array($result_arr) || count($result_arr) == 0) {
-                throw new Exception('No records found.');
-            }
-            $success = 1;
-        } catch (Exception $e) {
-            $success = 0;
-            $message = $e->getMessage();
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-        }
-
-        $this->db->_reset_all();
-        //
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
-    public function posts_images($data_arr)
-    {
-        try {
-            $result_arr = array();
-            if (false == empty($data_arr['u_user_id'])) {
-                $this->db->where("post_id  =", $data_arr['u_user_id']);
-            }
-            $this->db->from("post_images");        
-            $this->db->select("post_id AS post_images");
-            $this->db->select("post_images AS image");
-            $result_obj = $this->db->get();
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-             if (!is_array($result_arr) || count($result_arr) == 0) {
-                throw new Exception('No records found.');
-            } 
-            $success = 1;
-        } catch (Exception $e) {
-            $arrResult['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($arrResult, $e);
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-        //echo __LINE__;exit;
-      //  echo '<pre>';print_r($result_arr);exit;
-        return $return_arr;
-    }
-
-          /**
-     * This method is used to execute database queries for get user details API.
-     *
-     * @param string $user_id user_id is used to process query block.
-
-     * @return array $return_arr returns response of query block.
-     */
-    public function get_post_image($post_id = '')
-    {
-        try {
-            $message = "";
-            $result_arr = array();
-
-            
-            $this->db->from("post_images p");        
-            $this->db->select("post_id AS post_id");
-            $this->db->select("post_images AS post_images");
-
-            if (isset($post_id) && $post_id != "") {
-                $this->db->where("p.post_id =", $post_id);
-            }
-            $result_obj = $this->db->get();
-            //echo $this->db->last_query();
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-            // echo $this->db->last_query();
-            $db_error = $this->db->error();
-            if ($db_error['code']) {
-                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
-            }
-            if (!is_array($result_arr) || count($result_arr) == 0) {
-                throw new Exception('No records found.');
-            }
-            $success = 1;
-        } catch (Exception $e) {
-            $success = 0;
-            $message = $e->getMessage();
-            $params_arr['db_query'] = $this->db->last_query();
-            $this->general->apiLogger($params_arr, $e);
-        }
-
-        $this->db->_reset_all();
-        //
+        echo $this->db->last_query();
         $return_arr["success"] = $success;
         $return_arr["message"] = $message;
         $return_arr["data"] = $result_arr;
@@ -3342,54 +2915,4 @@ class Users_model extends CI_Model
         return $return_arr;
     }
 
-    /**
-     * This method is used to execute database queries for Edit Profile API.
-     * 
-     * @param array $params_arr params_arr array to process query block.
-     * 
-     * @param array $where_arr where_arr are used to process where condition(s).
-     * 
-     * @return array $return_arr returns response of query block.
-     */
-    public function delete_images($post_id = '')
-    {
-        // echo $post_id;die;
-        try
-        {
-            $result_arr = array();
-            if (isset($post_id))
-            {
-                $this->db->where("post_id",$post_id);
-            }
-
-            $res1 = $this->db->delete(" demo_api_users");
-            $id= $res1['post_id'];
-            if (isset($post_id))
-            {
-                $this->db->where("post_id",$post_id);
-            }
-            $res = $this->db->delete("post_images");
-            $affected_rows = $this->db->affected_rows();
-            if (!$res || $affected_rows == -1)
-            {
-                throw new Exception("Failure in updation.");
-            }
-            $result_param = "affected_rows";
-            $result_arr[0][$result_param] = $affected_rows;
-            $success = 1;
-
-        }
-        catch(Exception $e)
-        {
-            $success = 0;
-            $message = $e->getMessage();
-        }
-        $this->db->flush_cache();
-        $this->db->_reset_all();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-
-        return $return_arr;
-    }
 }

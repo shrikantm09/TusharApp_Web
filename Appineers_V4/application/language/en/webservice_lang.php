@@ -360,4 +360,8 @@
     $lang["send_message"]["messages_finish_success"] = "Failed to send message" ;
     $lang["send_message"]["blocked_user_finish_success"] = "Blocked user" ;
 
-    
+    // post_images api 
+    $lang["demo_api"]["users_finish_success"] = "You have Post Data successfully registered " ;
+    $lang["demo_api"]["users_finish_success_delete"] = " Post Data Deleted successfully " ;
+    $lang["demo_api"]["finish_success_1"] = " failed Post Data  " ;
+    $lang["demo_api"]["users_finish_success_1"] = " failed Post Data  " ;

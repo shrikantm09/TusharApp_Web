@@ -735,6 +735,25 @@ $config["user_list"] = array(
     ),
     "target" => ""
 );
+
+
+$config["demo_api"] = array(
+    "title" => "Demo apis",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "params" => array(
+        "post_id",
+        "post_title",
+        "post_decreption",
+        "posted_by",
+        "post_type",
+        "post_image",
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
 #####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */
